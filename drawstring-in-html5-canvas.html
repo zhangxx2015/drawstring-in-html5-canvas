@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+
+<canvas id="myCanvas" width="800" height="600" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+if(typeof fontStyles == "undefined")var fontStyles = {
+	normal 		: 'normal',	//正常
+	italic 		: 'italic',	//斜体字
+	oblique 	: 'oblique',//倾斜字体) 后两种在网页端一般没什么区别
+};
+if(typeof fontVariants == "undefined")var fontVariants = {
+	normal		:'normal',//正常
+	smallCaps	:'small-caps',//英文小写字母变成小的大写
+};
+if(typeof fontWeights == "undefined")var fontWeights = {
+	normal		:'normal',//正常
+	bold		:'bold',//加粗
+	bolder		:'bolder',//bolder
+	lighter		:'lighter',//lighter
+	manual		:'',//数字100-900(一般不用) 
+};
+if(typeof textAligns == "undefined")var textAligns = {
+	left 		:'left',
+	center		:'center',
+	right		:'right',
+};
+if(typeof textBaselines == "undefined")var textBaselines = {
+	alphabetic	:'alphabetic',//default
+	top 		:'top',
+	middle		:'middle',
+	bottom		:'bottom',
+	ideographic	:'ideographic',
+	hanging		:'hanging',
+};
+function drawString(ctx,width,height,text,
+	fontStyle 	,
+	fontVariant	,
+	fontWeight	,
+	fontSize	,
+	fontFamily	,
+	backColor	,
+	foreColor	,
+	textAlign	,
+	textBaseline,
+	pageMarginX	,
+	pageMarginY	,
+	lineSpace
+){
+	with(ctx){
+		fontStyle 					= fontStyle		||fontStyles.normal;
+		fontVariant					= fontVariant	||fontVariants.normal;
+		fontWeight					= fontWeight	||fontWeights.normal;
+		fontSize					= fontSize		||12;
+		fontFamily					= fontFamily	||'微软雅黑';
+		backColor					= backColor		||'rgb(30,41,61)';
+		foreColor					= foreColor		||'WhiteSmoke';
+		textAlign 					= textAlign		||textAligns.center;
+		textBaseline				= textBaseline	||textBaselines.middle;
+		pageMarginX					= pageMarginX	||20;
+		pageMarginY					= pageMarginY	||20;
+		lineSpace					= lineSpace		||8;
+		let lineHeight				= fontSize + lineSpace;
+		font 						= `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize||12}px ${fontFamily}`;
+		let pageMarginRight			= width -pageMarginX-pageMarginX;
+		let pageMarginBottom		= height-pageMarginY-pageMarginY;
+		let curX					= pageMarginX;
+		let curY					= pageMarginY;
+		let wAsc					= fontSize*2/3;
+		fillStyle = backColor;
+		fillRect(0,0,width,height);
+		fillStyle = foreColor;
+		while (text.length>0) {
+			if(10==text.charCodeAt(0)){
+				text=text.substring(1);
+				curX=pageMarginX;
+				curY+=lineHeight;
+				continue;
+			}
+			if(curX+measureText(text[0]).width>=pageMarginRight){
+				curX=pageMarginX;
+				curY+=lineHeight;
+				continue;
+			}
+			if(curY-lineHeight>pageMarginBottom){
+				break;
+			}
+			fillText(text[0], curX, curY);
+			if(255>text.charCodeAt(0)){
+				curX+=wAsc;
+			}else{
+				curX+=measureText(text[0]).width;
+			}
+			text=text.substring(1);
+		}
+	}
+}
+
+let text=`
+有太多的证据说明我们这个世界是虚拟的。
+
+1. 为什么宏观上丰富多彩，但是微观的基本粒子却都是一模一样的？
+	这正和图片丰富多彩，但是像素是一模一样的一回事
+2. 为什么光速有上限？
+	因为机器的运行速度有限
+3. 为什么会有普朗克常量？
+	因为机器的数据精度有限
+4. 为什么微观粒子都是几率云？
+	这是为了避免系统陷入循环而增加的随机扰动
+5. 为什么有泡利不相容原理？
+	看来系统采用的数据组织是多维数组
+6. 为什么量子计算机运行速度那么快，一瞬间可以尝试所有可能？
+	因为这个本质上是调用了宿主机的接口
+7. 为什么会有量子纠缠？
+	这实际上是引用同一个对象的两个指针
+8. 为什么会有观察者效应？
+	这显然是lazy updating
+9. 为什么时间有开端？
+	系统有启动时间嘛
+10. 为什么宗教人士，程序员都很难找女友？
+	系统对这些探索系统奥秘的不稳定份子都很不友好啊...
+如果说什么语言最接近系统使用的语言？
+	我觉得是c++，不然bug不应这么多。
+`;
+drawString(document.getElementById("myCanvas").getContext("2d"),800,600,text)
+
+</script>
+
+</body>
+</html>
